@@ -2,3 +2,9 @@ songs_classification/.ipynb_checkpoints
 songs_classification/dataset_analysis_media
 songs_classification/.~lock.spotify-2023.csv#
 songs_classification/ds_overview.ods
+songs_classification/wandb
+songs_classification/models_media
+songs_classification/ensembles_media
+songs_classification/catboost_info
+songs_classification/songs_decision_tree
+vehicles_classification/traffic-detection-dataset
