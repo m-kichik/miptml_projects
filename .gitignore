@@ -8,3 +8,6 @@ songs_classification/ensembles_media
 songs_classification/catboost_info
 songs_classification/songs_decision_tree
 vehicles_classification/traffic-detection-dataset
+vehicles_classification/__pycache__
+vehicles_classification/*.pth
+vehicles_classification/wandb
