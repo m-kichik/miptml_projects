@@ -105,8 +105,8 @@ def train(
 def main():
     num_classes = 5
     nn_size = 1
-    batch_size = 64
-    num_epochs = 150
+    batch_size = 50
+    num_epochs = 60
     in_size = 512
     device = torch.device("cuda:0")
 
@@ -118,13 +118,13 @@ def main():
         5: 'X',
     }
 
-    experiment_name = f"multilabel_cnn_{size_dict[nn_size]}_normalize"
+    experiment_name = f"multilabel_cnn_{size_dict[nn_size]}_normalize_and_no-fiasko"
 
     wandb.login(key='a110b325e0cff24ba829171ee36ae12d92ef3931')
     wandb.init(
         project='MIPT_ML_traffic_classification',
         name=experiment_name,
-        config={
+        config={miptml_projects/vehicles_classification/multilabel_cnn_N_normalize_and_no-fiasko_best.pth
             "num_classes": num_classes,
             "nn_size": size_dict[nn_size],
             "batch_size": batch_size,
@@ -170,6 +170,7 @@ def main():
         nn_size=nn_size,
         device=device,
     )
+    model.to(device)
     criterion = nn.BCELoss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
 

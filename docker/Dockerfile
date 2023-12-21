@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 gcc g++ -y
 
 RUN python3 -m pip install scikit-learn wandb
 RUN python3 -m pip install shap==0.43 black matplotlib opencv-python
-RUN python3 -m pip install notebook
+RUN python3 -m pip install lime
 
 # add user and his password
 ARG USER=docker_miptml
