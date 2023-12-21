@@ -1,6 +1,10 @@
 FROM pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime
 
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 gcc g++ -y
+
 RUN python3 -m pip install scikit-learn wandb
+RUN python3 -m pip install shap==0.43 black matplotlib opencv-python
+RUN python3 -m pip install notebook
 
 # add user and his password
 ARG USER=docker_miptml

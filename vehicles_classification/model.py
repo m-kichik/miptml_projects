@@ -12,11 +12,14 @@ class MultiLabelCNN(nn.Module):
 
         self.nn_size = nn_size
 
+        self.welcome_conv = nn.Sequential(
+            nn.Conv2d(3, 64, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+        )
+
         self.conv_backbone = [
             nn.Sequential(
-                nn.Conv2d(3, 64, kernel_size=3, padding=1),
-                nn.ReLU(),
-                nn.MaxPool2d(kernel_size=2, stride=2),
                 nn.Conv2d(64, 128, kernel_size=3, padding=1),
                 nn.ReLU(),
                 nn.MaxPool2d(kernel_size=2, stride=2),
@@ -41,12 +44,14 @@ class MultiLabelCNN(nn.Module):
 
         self.sigmoid = nn.Sigmoid()
 
+        self.welcome_conv.to(device)
         for seq in self.conv_backbone:
             seq.to(device)
         self.mlp_head.to(device)
         self.sigmoid.to(device)
 
     def forward(self, x):
+        x = self.welcome_conv(x)
         x = torch.stack([conv(x) for conv in self.conv_backbone], -1)
         x = x.view(-1, x.size(1) * x.size(2) * x.size(3) * x.size(4))
         x = self.mlp_head(x)

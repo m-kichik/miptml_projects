@@ -11,3 +11,6 @@ vehicles_classification/traffic-detection-dataset
 vehicles_classification/__pycache__
 vehicles_classification/*.pth
 vehicles_classification/wandb
+vehicles_classification/multilabel_cnn_N
+vehicles_classification/multilabel_cnn_N_normalize
+vehicles_classification/multilabel_cnn_S

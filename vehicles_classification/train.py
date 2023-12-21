@@ -1,4 +1,5 @@
 from tqdm import tqdm
+import random
 
 import numpy as np
 from sklearn.metrics import f1_score
@@ -13,6 +14,11 @@ import wandb
 
 from dataset import TrafficDataset
 from model import MultiLabelCNN
+
+SEED = 42
+random.seed(SEED)
+np.random.seed(SEED)
+torch.manual_seed(SEED)
 
 
 def eval(model, val_loader, threshold=0.5, criterion=None, device=torch.device("cpu")):
@@ -80,6 +86,10 @@ def train(
 
         if val_f1 > best_f1:
             torch.save(model.state_dict(), exp_name + "_best.pth")
+            best_f1 = val_f1
+
+        if (epoch + 1) % 10 == 0:
+            torch.save(model.state_dict(), exp_name + f"_{epoch + 1}_ep.pth")
 
         wandb.log({
             "train loss": train_loss,
@@ -95,8 +105,8 @@ def train(
 def main():
     num_classes = 5
     nn_size = 1
-    batch_size = 8
-    num_epochs = 15
+    batch_size = 64
+    num_epochs = 150
     in_size = 512
     device = torch.device("cuda:0")
 
@@ -108,12 +118,19 @@ def main():
         5: 'X',
     }
 
-    experiment_name = f"multilabel_cnn_{size_dict[nn_size]}"
+    experiment_name = f"multilabel_cnn_{size_dict[nn_size]}_normalize"
 
     wandb.login(key='a110b325e0cff24ba829171ee36ae12d92ef3931')
     wandb.init(
         project='MIPT_ML_traffic_classification',
-        name=experiment_name
+        name=experiment_name,
+        config={
+            "num_classes": num_classes,
+            "nn_size": size_dict[nn_size],
+            "batch_size": batch_size,
+            "num_epochs": num_epochs,
+            "input_size": in_size,
+        }
     )
 
     train_transform = transforms.Compose(
@@ -122,6 +139,7 @@ def main():
             transforms.RandomVerticalFlip(0.5),
             transforms.RandomRotation(15),
             transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ]
     )
 
@@ -129,6 +147,7 @@ def main():
         [
             transforms.Resize((in_size, in_size)),
             transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ]
     )
 
@@ -164,6 +183,12 @@ def main():
         optimizer=optimizer,
         device=device,
     )
+
+    test_loss, test_f1 = eval(
+        model, test_loader, threshold=0.5, criterion=criterion, device=device
+        )
+
+    print(f"Final f1: {test_f1}")
 
 
 if __name__ == "__main__":
