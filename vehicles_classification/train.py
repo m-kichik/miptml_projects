@@ -124,7 +124,7 @@ def main():
     wandb.init(
         project='MIPT_ML_traffic_classification',
         name=experiment_name,
-        config={miptml_projects/vehicles_classification/multilabel_cnn_N_normalize_and_no-fiasko_best.pth
+        config={
             "num_classes": num_classes,
             "nn_size": size_dict[nn_size],
             "batch_size": batch_size,
